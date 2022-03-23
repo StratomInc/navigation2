@@ -192,16 +192,16 @@ bool AStarAlgorithm<NodeT>::areInputsValid()
   }
 
   // Check if ending point is valid
-  if (getToleranceHeuristic() < 0.001 &&
-    !_goal->isNodeValid(_traverse_unknown, _collision_checker))
-  {
-    throw std::runtime_error("Failed to compute path, goal is occupied with no tolerance.");
-  }
+  //if (getToleranceHeuristic() < 0.001 &&
+  //  !_goal->isNodeValid(_traverse_unknown, _collision_checker))
+  //{
+  //  throw std::runtime_error("Failed to compute path, goal is occupied with no tolerance.");
+  //}
 
   // Check if starting point is valid
-  if (!_start->isNodeValid(_traverse_unknown, _collision_checker)) {
-    throw std::runtime_error("Starting point in lethal space! Cannot create feasible plan.");
-  }
+  //if (!_start->isNodeValid(_traverse_unknown, _collision_checker)) {
+  //  throw std::runtime_error("Starting point in lethal space! Cannot create feasible plan.");
+  //}
 
   return true;
 }

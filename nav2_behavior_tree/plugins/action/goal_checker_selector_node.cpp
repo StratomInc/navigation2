@@ -41,11 +41,14 @@ GoalCheckerSelector::GoalCheckerSelector(
 
   goal_checker_selector_sub_ = node_->create_subscription<std_msgs::msg::String>(
     topic_name_, qos, std::bind(&GoalCheckerSelector::callbackGoalCheckerSelect, this, _1));
+  RCLCPP_INFO_STREAM(node_->get_logger(), "constructed");
 }
 
 BT::NodeStatus GoalCheckerSelector::tick()
 {
-  rclcpp::spin_some(node_);
+  RCLCPP_INFO_STREAM(node_->get_logger(), "tick");
+  //rclcpp::spin_some(node_);
+  RCLCPP_INFO_STREAM(node_->get_logger(), "spun");
 
   // This behavior always use the last selected goal checker received from the topic input.
   // When no input is specified it uses the default goal checker.
@@ -56,14 +59,18 @@ BT::NodeStatus GoalCheckerSelector::tick()
     std::string default_goal_checker;
     getInput("default_goal_checker", default_goal_checker);
     if (default_goal_checker.empty()) {
+      RCLCPP_INFO_STREAM(node_->get_logger(), "goal checker empty - FAILURE");
       return BT::NodeStatus::FAILURE;
     } else {
       last_selected_goal_checker_ = default_goal_checker;
     }
   }
 
+  RCLCPP_INFO_STREAM(node_->get_logger(), "set output to %s" << last_selected_goal_checker_.c_str());
   setOutput("selected_goal_checker", last_selected_goal_checker_);
 
+
+  RCLCPP_INFO_STREAM(node_->get_logger(), "return");
   return BT::NodeStatus::SUCCESS;
 }
 

@@ -33,19 +33,29 @@ GoalCheckerSelector::GoalCheckerSelector(
 : BT::SyncActionNode(name, conf)
 {
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+  callback_group_ = node_->create_callback_group(
+    rclcpp::CallbackGroupType::MutuallyExclusive,
+    false);
+  callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
 
   getInput("topic_name", topic_name_);
 
   rclcpp::QoS qos(rclcpp::KeepLast(1));
   qos.transient_local().reliable();
 
+
+  rclcpp::SubscriptionOptions sub_option;
+  sub_option.callback_group = callback_group_;
   goal_checker_selector_sub_ = node_->create_subscription<std_msgs::msg::String>(
-    topic_name_, qos, std::bind(&GoalCheckerSelector::callbackGoalCheckerSelect, this, _1));
+    topic_name_,
+    qos,
+    std::bind(&GoalCheckerSelector::callbackGoalCheckerSelect, this, _1),
+    sub_option);
 }
 
 BT::NodeStatus GoalCheckerSelector::tick()
 {
-  rclcpp::spin_some(node_);
+  callback_group_executor_.spin_some();
 
   // This behavior always use the last selected goal checker received from the topic input.
   // When no input is specified it uses the default goal checker.

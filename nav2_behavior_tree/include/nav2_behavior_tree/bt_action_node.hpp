@@ -338,7 +338,7 @@ protected:
     auto send_goal_options = typename rclcpp_action::Client<ActionT>::SendGoalOptions();
     send_goal_options.result_callback =
       [this](const typename rclcpp_action::ClientGoalHandle<ActionT>::WrappedResult & result) {
-        if (future_goal_handle_) {
+        if (!this->goal_handle_) {
           RCLCPP_DEBUG(
             node_->get_logger(),
             "Goal result for %s available, but it hasn't received the goal response yet. "
